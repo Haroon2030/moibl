@@ -1,8 +1,10 @@
 import { Platform } from 'react-native';
 
 /** عنوان الخادم: متغير البيئة EXPO_PUBLIC_API_URL، وإلا القيمة الافتراضية للتطوير المحلي. */
+export const PRODUCTION_API_URL = 'https://mobil.alrsheed.net';
 export const DEFAULT_API_URL =
-  process.env.EXPO_PUBLIC_API_URL || (Platform.OS === 'android' ? 'http://10.0.2.2:8010' : 'http://localhost:8010');
+  process.env.EXPO_PUBLIC_API_URL ||
+  (__DEV__ ? (Platform.OS === 'android' ? 'http://10.0.2.2:8010' : 'http://localhost:8010') : PRODUCTION_API_URL);
 
 let baseUrl = DEFAULT_API_URL;
 let authToken: string | null = null;

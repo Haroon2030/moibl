@@ -147,7 +147,9 @@ class IsAuthenticatedPrincipal(BasePermission):
 # ── قفل محاولات الدخول الفاشلة (حسب المعرّف + عنوان IP) ──────────────────────
 
 def client_ip(request) -> str:
-    forwarded = (request.META.get('HTTP_X_FORWARDED_FOR') or '').split(',')[0].strip()
+    # خلف بروكسي واحد (Traefik) يضيف العنوان الحقيقي في آخر X-Forwarded-For. أول عنصر يكتبه العميل نفسه،
+    # فلو استُخدم لسهل تجاوز قفل المحاولات بتغيير الترويسة في كل طلب.
+    forwarded = (request.META.get('HTTP_X_FORWARDED_FOR') or '').split(',')[-1].strip()
     return forwarded or (request.META.get('REMOTE_ADDR') or 'unknown')
 
 

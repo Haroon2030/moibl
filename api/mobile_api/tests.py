@@ -75,6 +75,15 @@ class AuthTests(MobileApiBase):
         self.assertEqual(r2.status_code, 401)
         self.assertEqual(r.json()['detail'], r2.json()['detail'])  # لا نكشف وجود الرقم الوظيفي
 
+    def test_lockout_not_bypassed_by_spoofed_forwarded_for(self):
+        # العميل يكتب أول عنصر في X-Forwarded-For؛ البروكسي يضيف عنوانه الحقيقي في الآخر
+        for i in range(5):
+            self.client.post(f'{BASE}/auth/employee/', {'employee_number': '1001', 'id_number': 'bad'},
+                             content_type='application/json', HTTP_X_FORWARDED_FOR=f'6.6.6.{i}, 203.0.113.9')
+        r = self.client.post(f'{BASE}/auth/employee/', {'employee_number': '1001', 'id_number': '1111111111'},
+                             content_type='application/json', HTTP_X_FORWARDED_FOR='7.7.7.7, 203.0.113.9')
+        self.assertEqual(r.status_code, 429)
+
     def test_terminated_employee_cannot_login(self):
         self.emp_a.status = Employee.Status.TERMINATED
         self.emp_a.save(update_fields=['status'])

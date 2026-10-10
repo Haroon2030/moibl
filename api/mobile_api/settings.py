@@ -61,6 +61,10 @@ SECURE_SSL_REDIRECT = False
 
 _extra_hosts = [h.strip() for h in os.environ.get('MOBILE_API_ALLOWED_HOSTS', '').split(',') if h.strip()]
 ALLOWED_HOSTS = [*list(_BASE_ALLOWED_HOSTS), *_extra_hosts]
+# فحص الصحة الداخلي للحاوية (Docker HEALTHCHECK) يطلب عبر 127.0.0.1
+for _h in ('127.0.0.1', 'localhost'):
+    if _h not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_h)
 if _BASE_DEBUG:
     # أثناء التطوير: المحاكي (10.0.2.2) والجوال على الشبكة المحلية
     ALLOWED_HOSTS = ['*']

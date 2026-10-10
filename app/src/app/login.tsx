@@ -188,6 +188,8 @@ export default function Login() {
 
           <Button title="تسجيل الدخول" icon="log-in-outline" onPress={submit} loading={busy} disabled={!canSubmit} />
 
+          {__DEV__ ? (
+            <>
           <Pressable onPress={() => setShowServer((v) => !v)} style={{ alignSelf: 'center', padding: space.sm }} accessibilityRole="button">
             <Txt size={12} color={colors.muted} weight="bold">
               إعدادات الاتصال بالخادم
@@ -200,6 +202,8 @@ export default function Login() {
                 على الجوال الحقيقي استخدم عنوان الحاسوب في الشبكة المحلية، مثل http://192.168.1.10:8010
               </Txt>
             </Card>
+          ) : null}
+            </>
           ) : null}
         </View>
       </ScrollView>
